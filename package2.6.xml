@@ -1,0 +1,12 @@
+<packages>
+  <package name="BDMM" version="1.0.3-unofficial"
+           url="https://github.com/tgvaughan/bdmm/releases/download/v1.0.3-unofficial/BDMM.v1.0.3-unofficial.zip"
+           projectURL="https://github.com/denisekuehnert/bdmm"
+           description="Multi-type birth-death model."
+           >
+    <depends on="beast2" atleast="2.6.6"/>
+    <depends on="MultiTypeTree" atleast="7.0.1"/>
+    <depends on="MASTER" atleast="6.1.1"/>
+    <depends on="SA" atleast="2.0.2"/>
+  </package>
+</packages>
