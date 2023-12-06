@@ -3,6 +3,7 @@ package beast.app.beauti;
 import beast.app.draw.InputEditor;
 import beast.core.BEASTInterface;
 import beast.core.Input;
+import beast.core.parameter.RealParameter;
 import beast.evolution.speciation.BirthDeathMigrationModel;
 import java.awt.Color;
 import java.awt.Component;
@@ -117,7 +118,7 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
         c.weightx = 1.0;
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(R0Table, c);
-        R0EstCheckBox.setSelected(bdmm.R0.get().isEstimatedInput.get());
+        R0EstCheckBox.setSelected(((RealParameter)bdmm.R0.get()).isEstimatedInput.get());
         c.gridx = 2;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_END;
@@ -141,7 +142,7 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
         c.weightx = 1.0;
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(deltaTable, c);
-        deltaEstCheckBox.setSelected(bdmm.becomeUninfectiousRate.get().isEstimatedInput.get());
+        deltaEstCheckBox.setSelected(((RealParameter)bdmm.becomeUninfectiousRate.get()).isEstimatedInput.get());
         c.gridx = 2;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_END;
@@ -166,7 +167,7 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
         c.weightx = 1.0;
         c.anchor = GridBagConstraints.LINE_START;
         panel.add(samplingTable, c);
-        samplingEstCheckBox.setSelected(bdmm.samplingProportion.get().isEstimatedInput.get());
+        samplingEstCheckBox.setSelected(((RealParameter)bdmm.samplingProportion.get()).isEstimatedInput.get());
         c.gridx = 2;
         c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_END;
@@ -227,7 +228,7 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
         c.anchor = GridBagConstraints.LINE_START;
         c.weightx = 1.0;
         panel.add(rateMatrixTable, c);
-        rateMatrixEstCheckBox.setSelected(bdmm.migrationMatrix.get().isEstimatedInput.get());
+        rateMatrixEstCheckBox.setSelected(((RealParameter)bdmm.migrationMatrix.get()).isEstimatedInput.get());
 
         c.gridx = 2;
         c.gridy = 5;
@@ -252,11 +253,11 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             int samplingIntervals = samplingModel.getColumnCount()/oldDim;
 
             R0Model.setColumnCount(R0Model.getColumnCount()/oldDim*newDim);
-            bdmm.R0.get().setDimension(R0Model.getColumnCount());
+            ((RealParameter)bdmm.R0.get()).setDimension(R0Model.getColumnCount());
             deltaModel.setColumnCount(deltaModel.getColumnCount()/oldDim*newDim);
-            bdmm.becomeUninfectiousRate.get().setDimension(deltaModel.getColumnCount());
+            ((RealParameter)bdmm.becomeUninfectiousRate.get()).setDimension(deltaModel.getColumnCount());
             samplingModel.setColumnCount(samplingIntervals*newDim);
-            bdmm.samplingProportion.get().setDimension(samplingModel.getColumnCount());
+            ((RealParameter)bdmm.samplingProportion.get()).setDimension(samplingModel.getColumnCount());
             bdmm.setInputValue("stateNumber",newDim);
 
             StringBuilder sbfreqs = new StringBuilder();
@@ -271,15 +272,15 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
                     sbfreqs.append(Double.toString(fr));
 
             }
-            bdmm.frequencies.get().valuesInput.setValue(
+            ((RealParameter)bdmm.frequencies.get()).valuesInput.setValue(
                     sbfreqs.toString(),
-                    bdmm.frequencies.get());
+                    ((RealParameter)bdmm.frequencies.get()));
 
             bdmm.setInputValue("frequencies",sbfreqs.toString());
 
             rateMatrixModel.setColumnCount(newDim);
             rateMatrixModel.setRowCount(newDim);
-            bdmm.migrationMatrix.get().setDimension(newDim*newDim);
+            ((RealParameter)bdmm.migrationMatrix.get()).setDimension(newDim*newDim);
             for (int i=0; i<newDim; i++) {
                 if (R0Model.getValueAt(0, i) == null) {
                     R0Model.setValueAt(2.0, 0, i);
@@ -380,17 +381,17 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
         rateMatrixModel.setColumnCount(bdmm.stateNumber.get());
 
         for (int i=0; i<bdmm.R0.get().getDimension(); i++) {
-            R0Model.setValueAt(bdmm.R0.get().getValue(i), 0, i);
+            R0Model.setValueAt(bdmm.R0.get().getArrayValue(i), 0, i);
         }
         for (int i=0; i<bdmm.becomeUninfectiousRate.get().getDimension(); i++) {
-            deltaModel.setValueAt(bdmm.becomeUninfectiousRate.get().getValue(i), 0, i);
+            deltaModel.setValueAt(bdmm.becomeUninfectiousRate.get().getArrayValue(i), 0, i);
         }
         for (int i=0; i<bdmm.samplingProportion.get().getDimension(); i++) {
-            samplingModel.setValueAt(bdmm.samplingProportion.get().getValue(i), 0, i);
+            samplingModel.setValueAt(bdmm.samplingProportion.get().getArrayValue(i), 0, i);
         }
 
         for (int i=1; i<bdmm.samplingRateChangeTimesInput.get().getDimension(); i++) {
-            samplingTimesModel.setValueAt(bdmm.samplingRateChangeTimesInput.get().getValue(i), 0, i-1);
+            samplingTimesModel.setValueAt(bdmm.samplingRateChangeTimesInput.get().getArrayValue(i), 0, i-1);
         }
 
         for (int i=0; i<bdmm.stateNumber.get(); i++) {
@@ -401,10 +402,10 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             }
         }
 
-        R0EstCheckBox.setSelected(bdmm.R0.get().isEstimatedInput.get());
-        deltaEstCheckBox.setSelected(bdmm.becomeUninfectiousRate.get().isEstimatedInput.get());
-        samplingEstCheckBox.setSelected(bdmm.samplingProportion.get().isEstimatedInput.get());
-        rateMatrixEstCheckBox.setSelected(bdmm.migrationMatrix.get().isEstimatedInput.get());
+        R0EstCheckBox.setSelected(((RealParameter)bdmm.R0.get()).isEstimatedInput.get());
+        deltaEstCheckBox.setSelected(((RealParameter)bdmm.becomeUninfectiousRate.get()).isEstimatedInput.get());
+        samplingEstCheckBox.setSelected(((RealParameter)bdmm.samplingProportion.get()).isEstimatedInput.get());
+        rateMatrixEstCheckBox.setSelected(((RealParameter)bdmm.migrationMatrix.get()).isEstimatedInput.get());
     }
 
     public void saveToBDMM() {
@@ -418,10 +419,10 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             else
                 sbR0.append("2.0");
         }
-        bdmm.R0.get().setDimension(R0Model.getColumnCount());
-        bdmm.R0.get().valuesInput.setValue(
+        ((RealParameter)bdmm.R0.get()).setDimension(R0Model.getColumnCount());
+        ((RealParameter)bdmm.R0.get()).valuesInput.setValue(
                 sbR0.toString(),
-                bdmm.R0.get());
+                (RealParameter)bdmm.R0.get());
 
         StringBuilder sbdelta = new StringBuilder();
         for (int i=0; i<deltaModel.getColumnCount(); i++) {
@@ -433,10 +434,10 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             else
                 sbdelta.append("1.0");
         }
-        bdmm.becomeUninfectiousRate.get().setDimension(deltaModel.getColumnCount());
-        bdmm.becomeUninfectiousRate.get().valuesInput.setValue(
+        ((RealParameter)bdmm.becomeUninfectiousRate.get()).setDimension(deltaModel.getColumnCount());
+        ((RealParameter)bdmm.becomeUninfectiousRate.get()).valuesInput.setValue(
                 sbdelta.toString(),
-                bdmm.becomeUninfectiousRate.get());
+                (RealParameter)bdmm.becomeUninfectiousRate.get());
 
         StringBuilder sbsampling = new StringBuilder();
         for (int i=0; i<samplingModel.getColumnCount(); i++) {
@@ -448,10 +449,10 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             else
                 sbsampling.append("0.0 0.01");
         }
-        bdmm.samplingProportion.get().setDimension(samplingModel.getColumnCount());
-        bdmm.samplingProportion.get().valuesInput.setValue(
+        ((RealParameter)bdmm.samplingProportion.get()).setDimension(samplingModel.getColumnCount());
+        ((RealParameter)bdmm.samplingProportion.get()).valuesInput.setValue(
                 sbsampling.toString(),
-                bdmm.samplingProportion.get());
+                (RealParameter)bdmm.samplingProportion.get());
 
         StringBuilder sbsamplingtimes = new StringBuilder();
         for (int i=0; i<samplingTimesModel.getColumnCount(); i++) {
@@ -464,10 +465,10 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
             if (samplingTimesModel.getValueAt(0, i) != null)
                 sbsamplingtimes.append(samplingTimesModel.getValueAt(0, i));
         }
-        bdmm.samplingRateChangeTimesInput.get().setDimension(samplingTimesModel.getColumnCount()+1);
-        bdmm.samplingRateChangeTimesInput.get().valuesInput.setValue(
+        ((RealParameter)bdmm.samplingRateChangeTimesInput.get()).setDimension(samplingTimesModel.getColumnCount()+1);
+        ((RealParameter)bdmm.samplingRateChangeTimesInput.get()).valuesInput.setValue(
                 sbsamplingtimes.toString(),
-                bdmm.samplingRateChangeTimesInput.get());
+                (RealParameter)bdmm.samplingRateChangeTimesInput.get());
 
 
         StringBuilder sbRateMatrix = new StringBuilder();
@@ -488,25 +489,25 @@ public class BirthDeathMigrationInputEditor extends InputEditor.Base {
                     sbRateMatrix.append("0.1");
             }
         }
-        bdmm.migrationMatrix.get().setDimension(
+        ((RealParameter)bdmm.migrationMatrix.get()).setDimension(
             R0Model.getColumnCount()*(R0Model.getColumnCount()-1));
-        bdmm.migrationMatrix.get().valuesInput.setValue(
+        ((RealParameter)bdmm.migrationMatrix.get()).valuesInput.setValue(
             sbRateMatrix.toString(),
-            bdmm.migrationMatrix.get());
+            (RealParameter)bdmm.migrationMatrix.get());
 
-        bdmm.R0.get().isEstimatedInput.setValue(
-            R0EstCheckBox.isSelected(), bdmm.R0.get());
-        bdmm.migrationMatrix.get().isEstimatedInput.setValue(
-            rateMatrixEstCheckBox.isSelected(), bdmm.migrationMatrix.get());
-        bdmm.samplingProportion.get().isEstimatedInput.setValue(
-                samplingEstCheckBox.isSelected(), bdmm.samplingProportion.get());
+        ((RealParameter)bdmm.R0.get()).isEstimatedInput.setValue(
+            R0EstCheckBox.isSelected(), (RealParameter)bdmm.R0.get());
+        ((RealParameter)bdmm.migrationMatrix.get()).isEstimatedInput.setValue(
+            rateMatrixEstCheckBox.isSelected(), (RealParameter)bdmm.migrationMatrix.get());
+        ((RealParameter)bdmm.samplingProportion.get()).isEstimatedInput.setValue(
+                samplingEstCheckBox.isSelected(), (RealParameter)bdmm.samplingProportion.get());
 
         try {
-            bdmm.R0.get().initAndValidate();
-            bdmm.samplingProportion.get().initAndValidate();
-            bdmm.samplingRateChangeTimesInput.get().initAndValidate();
-            bdmm.becomeUninfectiousRate.get().initAndValidate();
-            bdmm.migrationMatrix.get().initAndValidate();
+            ((RealParameter)bdmm.R0.get()).initAndValidate();
+            ((RealParameter)bdmm.samplingProportion.get()).initAndValidate();
+            ((RealParameter)bdmm.samplingRateChangeTimesInput.get()).initAndValidate();
+            ((RealParameter)bdmm.becomeUninfectiousRate.get()).initAndValidate();
+            ((RealParameter)bdmm.migrationMatrix.get()).initAndValidate();
             bdmm.initAndValidate();
         } catch (Exception ex) {
             System.err.println(ex.getCause());
